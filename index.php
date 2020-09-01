@@ -1,4 +1,9 @@
-<?php require_once 'database/conexao.php'; ?>
+<?php 
+require_once 'model/conexao.php'; 
+require_once 'controller/ControllerDeletar.php';
+require_once 'controller/ControllerCadastrar.php';
+require_once 'controller/ControllerEditar.php';
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -30,9 +35,12 @@
   </thead>
   <tbody class="border-0">
       <?php
-      $sql = "SELECT * FROM produtos";
-      $resultado = mysqli_query($conn, $sql);
-      while($dados = mysqli_fetch_array($resultado)):
+     // $sql = "SELECT * FROM produtos";
+     // $resultado = mysqli_query($conn, $sql);
+     // while($dados = mysqli_fetch_array($resultado)):
+      $lista = new Banco();
+      $row = $lista->getProduto();
+      foreach ($row as $dados){
       ?>
     <tr>
       <td><figure><img src="public/<?php echo $dados['imagem']?>" alt="img" width="100" height="100"></figure></td>
@@ -40,7 +48,7 @@
       <td>R$ <?php echo $dados['preco']; ?></td>
       <td><?php echo $dados['descricao']; ?></td>
       <td><a href="#" class="btn btn-warning" data-toggle="modal" data-target="#modal-id<?php echo $dados['id']?>"><i class="fas fa-marker"></i></a></td>
-      <td><a href="config/deletar.php?id=<?php echo $dados['id']?>" class="btn btn-danger"><i class="fas fa-trash-alt"></i></a></td>
+      <td><a href="controllerDeletar.php?id=<?php echo $dados['id']?>" class="btn btn-danger"><i class="fas fa-trash-alt"></i></a></td>
     </tr>
           
               <div class="modal fade" id="modal-id<?php echo $dados['id']?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -53,7 +61,7 @@
                   </button>
                 </div>
                     <div class="modal-body">
-                    <form action="config/produto-update.php" method="POST"  enctype="multipart/form-data">
+                    <form action="controller/ControllerEditar.php" method="POST"  enctype="multipart/form-data">
                             <input type="hidden" name='id' value="<?php echo $dados['id'];?>">
                           <div class="form-group col-md-6">
                             <input type="text" class="form-control" id="produto-nome" name='nome' value="<?php echo $dados['nome'];?>">
@@ -70,7 +78,7 @@
                           <button type="submit" name='update' class="btn btn-primary mb-2">atualizar</button>
                     </form>
                     </div>
-      <?php endwhile; ?>
+      <?php }; ?>
   </tbody>
 </table>
 </div>
@@ -85,7 +93,7 @@
         </button>
       </div>
           <div class="modal-body">
-              <form action="config/produto-create.php" method="POST"  enctype="multipart/form-data">
+              <form action="controller/ControllerCadastrar.php" method="POST"  enctype="multipart/form-data">
                   <div class="form-group col-md-6">
                     <input type="text" class="form-control" id="produto-nome" placeholder="Nome" name='nome'>
                     </div>
